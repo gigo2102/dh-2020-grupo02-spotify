@@ -71,20 +71,20 @@ def get_df():
 def get_model():
 	return get('1zob_EMMBhBAj-hNDDTb7jOon9pQr2sDj', 'model.joblib')
 
-# indices2 = load(get_idx())
-# df2 = load(get_df())
-# sig2 = load(get_model())
+indices2 = load(get_idx())
+df2 = load(get_df())
+sig2 = load(get_model())
 
 # armamos la pagina
 st.title('Te recomendamos canciones!')
 
-# canciones_list = st.sidebar.selectbox("Elegir Tema para recomendaciones por letra", df2["tema"].unique())
-# q = df2.query(f"tema=='{canciones_list}'")# .iloc[0]
-# cancion_elegida = q.iloc[0]['tema']
-# st.write(f'Elegiste la cancion: {cancion_elegida} - Tus recomendaciones por letra son:')
-# # escribimos recomendaciones
-# results = give_rec(cancion_elegida, sig2, indices2, df2)
-# st.write(results)
+canciones_list = st.sidebar.selectbox("Elegir Tema para recomendaciones por letra", df2["tema"].unique())
+q = df2.query(f"tema=='{canciones_list}'")# .iloc[0]
+cancion_elegida = q.iloc[0]['tema']
+st.write(f'Elegiste la cancion: {cancion_elegida} - Tus recomendaciones por letra son:')
+# escribimos recomendaciones
+results = give_rec(cancion_elegida, sig2, indices2, df2)
+st.write(results)
 
 # =====================================================
 
