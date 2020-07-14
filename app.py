@@ -71,20 +71,47 @@ def get_df():
 def get_model():
 	return get('1zob_EMMBhBAj-hNDDTb7jOon9pQr2sDj', 'model.joblib')
 
-indices2 = load(get_idx())
-df2 = load(get_df())
-sig2 = load(get_model())
+# indices2 = load(get_idx())
+# df2 = load(get_df())
+# sig2 = load(get_model())
 
 # armamos la pagina
 st.title('Te recomendamos canciones!')
-canciones_list = st.sidebar.selectbox("Elegir Tema", df2["tema"].unique())
-q = df2.query(f"tema=='{canciones_list}'")# .iloc[0]
-cancion_elegida = q.iloc[0]['tema']
-st.write(f'Elegiste la cancion: {cancion_elegida}')
-st.write('Recomendaciones:')
+
+# canciones_list = st.sidebar.selectbox("Elegir Tema para recomendaciones por letra", df2["tema"].unique())
+# q = df2.query(f"tema=='{canciones_list}'")# .iloc[0]
+# cancion_elegida = q.iloc[0]['tema']
+# st.write(f'Elegiste la cancion: {cancion_elegida} - Tus recomendaciones por letra son:')
+# # escribimos recomendaciones
+# results = give_rec(cancion_elegida, sig2, indices2, df2)
+# st.write(results)
+
+# =====================================================
+
+def give_rec_audio(title, indices, df, model_nn, X_sc):
+	# Indice de la cancion
+	idx = indices[title]
+	# indices mas cercanos a ese indice 
+	vecinos = model_nn.kneighbors(X_sc[idx,:].reshape(1,-1), n_neighbors=6, return_distance=False)
+	# Top de canciones mas similares
+	temas = dict({})
+	for i in vecinos:
+		for recomendados in list(df['tema'][i]):
+			temas[str(recomendados).lower()] = recomendados
+	return pd.DataFrame(list(temas.values()))
+    
+indices_audio = load('idx_audio.joblib')
+df_audio = load('df_audio.joblib')
+model_audio = load('model_audio.joblib')
+X_sc_audio = load('X_sc_audio.joblib')
+
+canciones_list_audio = st.sidebar.selectbox("Elegir Tema para recomendaciones por audio", df_audio["tema"].unique()[:1000])
+q_audio = df_audio.query(f"tema=='{canciones_list_audio}'")# .iloc[0]
+cancion_elegida_audio = q_audio.iloc[0]['tema']
+st.write(f'Elegiste la cancion: {cancion_elegida_audio} - Tus recomendaciones por audio son:')
 # escribimos recomendaciones
-results = give_rec(cancion_elegida, sig2, indices2, df2)
-st.write(results)
+results_audio = give_rec_audio(cancion_elegida_audio, indices_audio, df_audio, model_audio, X_sc_audio)
+st.write(results_audio)
 
 
 # In[ ]:
